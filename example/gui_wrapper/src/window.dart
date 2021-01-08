@@ -5,8 +5,11 @@ import 'win_control.dart';
 
 class Window extends WinControl{
   Window({
+    String text = 'Window',
     bool center = true,
+    bool visible = true,
   }) : super(
+      text: text,
       width: 640,
       height: 480,
       className: DartWindowClass.name,
@@ -15,7 +18,7 @@ class Window extends WinControl{
     if (center) {
       moveToCenter();
     }
-    visible = true;
+    super.visible = visible;
   }
 
   @override

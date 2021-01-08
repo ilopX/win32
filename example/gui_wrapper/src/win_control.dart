@@ -31,7 +31,7 @@ abstract class WinControl {
 
   int createWindow() => CreateWindowEx(0,
       TEXT(className),
-      TEXT(text),
+      TEXT(_text),
       style,
       _x,
       _y,
