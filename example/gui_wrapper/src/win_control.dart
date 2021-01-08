@@ -1,4 +1,3 @@
-
 import 'dart:ffi';
 
 import 'package:win32/win32.dart';
@@ -14,13 +13,12 @@ abstract class WinControl {
     int y = 10,
     int width = 50,
     int height = 15,
-    int style = WS_THICKFRAME | WS_SYSMENU,
+    this.style = WS_THICKFRAME | WS_SYSMENU,
   }) :  _text = text,
         _x = x,
         _y = y,
         _width = width,
-        _height = height,
-        _style = style {
+        _height = height {
     _hWnd = createWindow();
   }
 
@@ -29,13 +27,12 @@ abstract class WinControl {
   int _hWnd = 0;
   int get hWnd => _hWnd;
 
-  int _style;
-  int get style => _style;
+  final int style;
 
   int createWindow() => CreateWindowEx(0,
       TEXT(className),
       TEXT(text),
-      _style,
+      style,
       _x,
       _y,
       _width,
@@ -100,7 +97,7 @@ abstract class WinControl {
   void setParent(WinControl parent) {
     SetParent(_hWnd, parent._hWnd);
     SetWindowLongPtr(_hWnd, GWL_STYLE, WS_TABSTOP | WS_CHILD);
-    MoveWindow(_hWnd, x, y, width, height, FALSE);
+    _updateSize();
     ShowWindow(_hWnd, visible ? SW_SHOW : SW_HIDE);
   }
 }

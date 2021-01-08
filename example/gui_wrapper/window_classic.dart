@@ -3,6 +3,7 @@ import 'src/window.dart';
 
 void main() {
   Window(
+    center: true,
     // text: 'Window',
     // visible: true,
     // windowHeader: WindowHeader(
@@ -19,7 +20,7 @@ void main() {
     //   return DefWindowProc(hWnd, Msg, wParam, lParam);
     // }
   );
-  
+
   exec();
 }
 
