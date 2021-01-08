@@ -76,3 +76,5 @@ int RegisterClassEx(Pointer<WNDCLASSEX> lpWndClass) {
       int Function(Pointer<WNDCLASSEX> lpWndClass)>('RegisterClassExW');
   return _RegisterClassEx(lpWndClass);
 }
+
+const GWL_STYLE = -16;
