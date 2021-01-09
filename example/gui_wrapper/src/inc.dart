@@ -92,3 +92,7 @@ int GetWindowLongPtr(int hWnd, int nIndex) {
       int Function(int, int)>('GetWindowLongPtrW');
   return _getWindowLongPtr(hWnd, nIndex);
 }
+
+const DEFAULT_GUI_FONT = 17;
+const RDW_INVALIDATE =  0x0001;
+const DT_CALCRECT = 0x00000400;

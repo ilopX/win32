@@ -29,6 +29,7 @@ abstract class WinControl {
         _width = width,
         _height = height {
     _hWnd = createWindow();
+    SendMessage(_hWnd, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), FALSE);
     controller?._control = this;
   }
 
