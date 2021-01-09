@@ -11,7 +11,7 @@ class Flags {
     if (expression) {
       _flags |= newFlag;
     } else {
-      _flags ^= newFlag;
+      _flags = _flags & ~newFlag;
     }
   }
 

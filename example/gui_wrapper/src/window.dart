@@ -2,6 +2,7 @@ import 'package:win32/win32.dart';
 
 import 'base/dart_window_class.dart';
 import 'base/win_control.dart';
+import 'base/window_header.dart';
 
 class Window extends WinControl {
   Window({
@@ -9,7 +10,9 @@ class Window extends WinControl {
     bool center = true,
     bool visible = true,
     bool resize = true,
-  }) : _resize = resize,
+    WindowHeader windowHeader = const WindowHeader(),
+  }) :  _resize = resize,
+        _windowHeader = windowHeader,
         super(
           text: text,
           width: 640,
@@ -21,6 +24,13 @@ class Window extends WinControl {
       moveToCenter();
     }
     super.visible = visible;
+    _updateStyle();
+  }
+
+  WindowHeader _windowHeader;
+  WindowHeader get windowHeader => _windowHeader;
+  set windowHeader(WindowHeader newWindowHeader) {
+    _windowHeader = newWindowHeader;
     _updateStyle();
   }
 
@@ -46,6 +56,11 @@ class Window extends WinControl {
 
   void _updateStyle() {
     changeWindowFlag({
+      WS_OVERLAPPEDWINDOW: true,
+      WS_MINIMIZEBOX: _windowHeader.minimizeBox,
+      WS_MAXIMIZEBOX: _windowHeader.maximizeBox,
+      WS_SYSMENU: _windowHeader.closeBox,
+      WS_CAPTION: _windowHeader.visible,
       WS_THICKFRAME: _resize,
     });
   }

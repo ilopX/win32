@@ -2,9 +2,9 @@ import 'dart:ffi';
 
 import 'package:win32/win32.dart';
 
-import '../_inc.dart';
 import '../app.dart';
-import '../utitlites/flags.dart';
+import '../inc.dart';
+import '../utilities/flags.dart';
 
 abstract class WinControl {
   WinControl({

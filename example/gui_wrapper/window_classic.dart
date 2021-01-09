@@ -7,11 +7,7 @@ void main() {
     center: true,
     visible: true,
     resize: true,
-    // windowHeader: WindowHeader(
-    //   visible: true,
-    //   minimizeBox: true,
-    //   maximizeBox: false,
-    // ),
+    windowHeader: WindowHeader.full()
     // startMinimize: false,
     // startMaximize: false,
     // showInTaskPanel: false,

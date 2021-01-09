@@ -1,8 +1,9 @@
 import 'dart:ffi';
+
 import 'package:win32/win32.dart';
 
-import '../_inc.dart';
 import '../app.dart';
+import '../inc.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class DartWindowClass {
