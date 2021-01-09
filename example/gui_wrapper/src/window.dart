@@ -14,6 +14,7 @@ class Window extends WinControl {
     bool resize = true,
     WindowHeader windowHeader = const WindowHeader(),
     WndProcControl? onWndProc,
+    Controller<Window>? controller,
   }) :  _resize = resize,
         _windowHeader = windowHeader,
         super(
@@ -23,6 +24,7 @@ class Window extends WinControl {
           className: DartWindowClass.name,
           style: WS_OVERLAPPEDWINDOW,
           onWndProc: onWndProc,
+          controller: controller
       ){
     if (center) {
       moveToCenter();

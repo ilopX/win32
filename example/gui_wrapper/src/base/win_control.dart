@@ -6,6 +6,12 @@ import '../app.dart';
 import '../inc.dart';
 import '../utilities/flags.dart';
 
+class Controller<T extends WinControl> {
+  T? _control;
+  T? get control => _control;
+  Controller();
+}
+
 abstract class WinControl {
   WinControl({
     required this.className,
@@ -16,12 +22,14 @@ abstract class WinControl {
     int height = 15,
     this.style = WS_THICKFRAME | WS_SYSMENU,
     this.onWndProc,
+    Controller? controller,
   }) :  _text = text,
         _x = x,
         _y = y,
         _width = width,
         _height = height {
     _hWnd = createWindow();
+    controller?._control = this;
   }
 
   final String className;
