@@ -3,9 +3,27 @@ import 'src/app.dart' as app;
 import 'src/base/win_control.dart';
 import 'src/window.dart';
 
-void main() {
-  final win =  Controller<Window>();
+// old style
+class MyWin extends Window {
+  MyWin() :super(text: 'MyWin');
 
+  @override
+  int wndProc(int msg, int wParam, int lParam) {
+    switch(msg) {
+      case WM_MOUSEMOVE: {
+        final x = LOWORD(lParam);
+        final y = HIWORD(lParam);
+        text = 'x: $x, y: $y';
+        break;
+      }
+    }
+    return super.wndProc(msg, wParam, lParam);
+  }
+}
+
+void main() {
+  // flutter  style
+  final win =  Controller<Window>();
   final w = Window(
     controller: win,
     text: 'Window example',
@@ -16,6 +34,7 @@ void main() {
       switch(uMsg) {
         case WM_RBUTTONDOWN: {
           win.control?.text = 'new Text';
+          MyWin();
           break;
         }
       }

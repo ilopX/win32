@@ -78,7 +78,7 @@ int RegisterClassEx(Pointer<WNDCLASSEX> lpWndClass) {
 }
 
 const GWL_STYLE = -16;
-
+const GWL_EXSTYLE = -20;
 // Retrieves information about the specified window. The function also retrieves
 // the value at a specified offset into the extra window memory.
 

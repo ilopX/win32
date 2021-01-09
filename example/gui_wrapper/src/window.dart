@@ -41,9 +41,14 @@ class Window extends WinControl {
   }
 
   @override
-  int createWindow() {
+  int createWindow({int hWndParent = 0}) {
     DartWindowClass.register();
-    final hwnd = super.createWindow();
+
+    final hwnd = super.createWindow(hWndParent: windows.isNotEmpty
+        ? windows.keys.first
+        : 0
+    );
+
     windows[hwnd] = this;
     return hwnd;
   }

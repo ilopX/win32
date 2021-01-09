@@ -39,7 +39,7 @@ abstract class WinControl {
 
   final int style;
 
-  int createWindow() => CreateWindowEx(0,
+  int createWindow({int hWndParent = 0}) => CreateWindowEx(0,
       TEXT(className),
       TEXT(_text),
       style,
@@ -47,7 +47,7 @@ abstract class WinControl {
       _y,
       _width,
       _height,
-      0,
+      hWndParent,
       0,
       hInst,
       nullptr
