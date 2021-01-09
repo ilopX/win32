@@ -3,6 +3,7 @@ import 'package:win32/win32.dart';
 import 'base/dart_window_class.dart';
 import 'base/win_control.dart';
 import 'base/window_header.dart';
+import 'inc.dart';
 
 class Window extends WinControl {
   Window({
@@ -23,8 +24,8 @@ class Window extends WinControl {
     if (center) {
       moveToCenter();
     }
+     _updateStyle();
     super.visible = visible;
-    _updateStyle();
   }
 
   WindowHeader _windowHeader;
@@ -55,13 +56,17 @@ class Window extends WinControl {
   }
 
   void _updateStyle() {
-    changeWindowFlag({
+    updateWindowFlag(GWL_STYLE, {
       WS_OVERLAPPEDWINDOW: true,
       WS_MINIMIZEBOX: _windowHeader.minimizeBox,
       WS_MAXIMIZEBOX: _windowHeader.maximizeBox,
       WS_SYSMENU: _windowHeader.closeBox,
       WS_CAPTION: _windowHeader.visible,
       WS_THICKFRAME: _resize,
+    });
+
+    updateWindowFlag(GWL_EXSTYLE, {
+      WS_EX_TOOLWINDOW: _windowHeader.toolBox,
     });
   }
 }

@@ -102,8 +102,8 @@ abstract class WinControl {
     ShowWindow(_hWnd, visible ? SW_SHOW : SW_HIDE);
   }
 
-  void changeWindowFlag(Map<int, bool> flagsExpressionMap) {
-    WinFlag(this, GWL_STYLE)
+  void updateWindowFlag(int gwlFlag, Map<int, bool> flagsExpressionMap) {
+    WinFlag(this, gwlFlag)
       ..addOrRemoveFlags(flagsExpressionMap)
       ..apply();
   }

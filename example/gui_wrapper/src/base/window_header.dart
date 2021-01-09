@@ -3,12 +3,14 @@ class WindowHeader {
   final bool minimizeBox;
   final bool maximizeBox;
   final bool closeBox;
+  final bool toolBox;
 
   const WindowHeader({
     this.visible = true,
     this.minimizeBox = true,
     this.maximizeBox = true,
     this.closeBox = true,
+    this.toolBox = false,
   });
 
   factory WindowHeader.full() => const WindowHeader();
@@ -21,4 +23,6 @@ class WindowHeader {
   factory WindowHeader.noClose() => const WindowHeader(closeBox: false);
 
   factory WindowHeader.hide() => const WindowHeader(visible: false);
+
+  factory WindowHeader.toolBox() => const WindowHeader(toolBox: true);
 }
