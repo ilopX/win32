@@ -2,8 +2,9 @@ import 'dart:ffi';
 
 import 'package:win32/win32.dart';
 
-import '_inc.dart';
-import 'app.dart';
+import '../_inc.dart';
+import '../app.dart';
+import '../utitlites/flags.dart';
 
 abstract class WinControl {
   WinControl({
@@ -99,5 +100,24 @@ abstract class WinControl {
     SetWindowLongPtr(_hWnd, GWL_STYLE, WS_TABSTOP | WS_CHILD);
     _updateSize();
     ShowWindow(_hWnd, visible ? SW_SHOW : SW_HIDE);
+  }
+
+  void changeWindowFlag(Map<int, bool> flagsExpressionMap) {
+    WinFlag(this, GWL_STYLE)
+      ..addOrRemoveFlags(flagsExpressionMap)
+      ..apply();
+  }
+}
+
+class WinFlag  extends Flags {
+  final int hWnd;
+  final int type;
+
+  WinFlag(WinControl window, this.type)
+      : hWnd = window.hWnd,
+        super(initFlags: GetWindowLongPtr(window.hWnd, type));
+
+  void apply() {
+    SetWindowLongPtr(hWnd, type, flags);
   }
 }

@@ -1,8 +1,8 @@
 import 'dart:ffi';
 import 'package:win32/win32.dart';
 
-import '_inc.dart';
-import 'app.dart';
+import '../_inc.dart';
+import '../app.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class DartWindowClass {
@@ -18,7 +18,7 @@ class DartWindowClass {
 
   static int _registerNewWindowClass() {
     final wndClass = WNDCLASSEX.allocate();
-    wndClass.style = CS_HREDRAW | CS_VREDRAW;
+    wndClass.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
     wndClass.lpfnWndProc = appWndProc;
     wndClass.hInstance = hInst;
     wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);

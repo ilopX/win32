@@ -78,3 +78,17 @@ int RegisterClassEx(Pointer<WNDCLASSEX> lpWndClass) {
 }
 
 const GWL_STYLE = -16;
+
+// Retrieves information about the specified window. The function also retrieves
+// the value at a specified offset into the extra window memory.
+
+// LONG_PTR GetWindowLongPtrW(
+//     HWND hWnd,
+//     int  nIndex
+//     );
+int GetWindowLongPtr(int hWnd, int nIndex) {
+  final _getWindowLongPtr = _user32.lookupFunction<
+      IntPtr Function(Int32, Int32),
+      int Function(int, int)>('GetWindowLongPtrW');
+  return _getWindowLongPtr(hWnd, nIndex);
+}

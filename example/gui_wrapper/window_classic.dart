@@ -6,6 +6,7 @@ void main() {
     text: 'Window example',
     center: true,
     visible: true,
+    resize: true,
     // windowHeader: WindowHeader(
     //   visible: true,
     //   minimizeBox: true,

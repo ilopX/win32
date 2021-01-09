@@ -2,6 +2,8 @@ import 'dart:ffi';
 
 import 'package:win32/win32.dart';
 
+var onClickWindow = (){};
+
 final int hInst = GetModuleHandle(nullptr);
 
 final Pointer<NativeFunction> appWndProc = Pointer
@@ -21,6 +23,11 @@ int _appWindowProc(int hWnd, int uMsg, int wParam, int lParam) {
       PostQuitMessage(0);
       return 0;
     }
+    case WM_LBUTTONDOWN:{
+      onClickWindow();
+      break;
+    }
+
   }
   return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
