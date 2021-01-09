@@ -15,6 +15,7 @@ abstract class WinControl {
     int width = 50,
     int height = 15,
     this.style = WS_THICKFRAME | WS_SYSMENU,
+    this.onWndProc,
   }) :  _text = text,
         _x = x,
         _y = y,
@@ -106,6 +107,13 @@ abstract class WinControl {
     WinFlag(this, gwlFlag)
       ..addOrRemoveFlags(flagsExpressionMap)
       ..apply();
+  }
+
+  WndProcControl ?onWndProc;
+
+  int wndProc(int msg, int wParam, int lParam) {
+    onWndProc?.call(msg, wParam, lParam);
+    return FALSE;
   }
 }
 

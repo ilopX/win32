@@ -1,5 +1,6 @@
 import 'package:win32/win32.dart';
 
+import 'app.dart';
 import 'base/dart_window_class.dart';
 import 'base/win_control.dart';
 import 'base/window_header.dart';
@@ -12,6 +13,7 @@ class Window extends WinControl {
     bool visible = true,
     bool resize = true,
     WindowHeader windowHeader = const WindowHeader(),
+    WndProcControl? onWndProc,
   }) :  _resize = resize,
         _windowHeader = windowHeader,
         super(
@@ -19,7 +21,8 @@ class Window extends WinControl {
           width: 640,
           height: 480,
           className: DartWindowClass.name,
-          style: WS_OVERLAPPEDWINDOW
+          style: WS_OVERLAPPEDWINDOW,
+          onWndProc: onWndProc,
       ){
     if (center) {
       moveToCenter();
@@ -38,7 +41,9 @@ class Window extends WinControl {
   @override
   int createWindow() {
     DartWindowClass.register();
-    return super.createWindow();
+    final hwnd = super.createWindow();
+    windows[hwnd] = this;
+    return hwnd;
   }
 
   void moveToCenter() {

@@ -1,3 +1,4 @@
+import 'package:win32/win32.dart';
 import 'src/app.dart';
 import 'src/window.dart';
 
@@ -7,15 +8,14 @@ void main() {
     center: true,
     visible: true,
     resize: true,
-    windowHeader: WindowHeader.full()
-    // startMinimize: false,
-    // startMaximize: false,
-    // showInTaskPanel: false,
-    // resize: true,
-    // onPaint: (GdiPlusGraph graph) {}
-    // wndProc: (int hWnd, int uMsg, int wParam, int lParam) {
-    //   return DefWindowProc(hWnd, Msg, wParam, lParam);
-    // }
+    onWndProc: (int uMsg, int wParam, int lParam) {
+      switch(uMsg) {
+        case WM_RBUTTONDOWN: {
+          print('click');
+          break;
+        }
+      }
+    }
   );
   exec();
 }

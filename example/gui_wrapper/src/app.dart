@@ -2,12 +2,16 @@ import 'dart:ffi';
 
 import 'package:win32/win32.dart';
 
-var onClickWindow = (){};
+import 'window.dart';
+
+typedef WndProcControl = void Function(int msg, int wParam, int lParam);
 
 final int hInst = GetModuleHandle(nullptr);
 
 final Pointer<NativeFunction> appWndProc = Pointer
     .fromFunction<WindowProc>(_appWindowProc, 0);
+
+ final windows = <int, Window>{};
 
 void exec() {
   final msg = MSG.allocate();
@@ -17,17 +21,15 @@ void exec() {
   }
 }
 
-int _appWindowProc(int hWnd, int uMsg, int wParam, int lParam) {
-  switch (uMsg) {
+int _appWindowProc(int hWnd, int msg, int wParam, int lParam) {
+  switch (msg) {
     case WM_DESTROY: {
       PostQuitMessage(0);
       return 0;
     }
-    case WM_LBUTTONDOWN:{
-      onClickWindow();
-      break;
-    }
-
   }
-  return DefWindowProc(hWnd, uMsg, wParam, lParam);
+
+  windows[hWnd]?.wndProc(msg, wParam, lParam);
+
+  return DefWindowProc(hWnd, msg, wParam, lParam);
 }
