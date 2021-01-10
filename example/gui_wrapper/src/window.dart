@@ -1,3 +1,6 @@
+import 'dart:ffi';
+
+import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import 'app.dart';
@@ -42,8 +45,26 @@ class Window extends WinControl {
   WindowHeader _windowHeader;
   WindowHeader get windowHeader => _windowHeader;
   set windowHeader(WindowHeader newWindowHeader) {
+    // TODO: refactor this method
+    bool newHideValue = true;
+
+    final rect = RECT.allocate();
+    GetWindowRect(hWnd, rect.addressOf);
+
+    if (newHideValue) {
+      SetWindowPos(hWnd, 0, rect.left, rect.top,
+          rect.right-rect.left, rect.bottom-rect.top-1, 0);
+    }
     _windowHeader = newWindowHeader;
     _updateStyle();
+
+    GetWindowRect(hWnd, rect.addressOf);
+    if (newHideValue) {
+      SetWindowPos(hWnd, 0, rect.left, rect.top,
+          rect.right-rect.left, rect.bottom-rect.top+1, 0);
+    }
+
+    free(rect.addressOf);
   }
 
   @override

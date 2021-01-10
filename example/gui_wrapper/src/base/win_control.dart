@@ -23,12 +23,13 @@ abstract class WinControl {
     this.style = WS_THICKFRAME | WS_SYSMENU,
     this.onWndProc,
     Controller? controller,
+    WinControl? parent,
   }) :  _text = text,
         _x = x,
         _y = y,
         _width = width,
         _height = height {
-    _hWnd = createWindow();
+    _hWnd = createWindow(hWndParent: parent?.hWnd ?? 0);
     SendMessage(_hWnd, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), FALSE);
     controller?._control = this;
   }
@@ -53,6 +54,9 @@ abstract class WinControl {
       hInst,
       nullptr
   );
+
+  // TODO: add correct x, y, width getters
+  // TODO: add positional method
 
   int _x;
   int get x  => _x;
@@ -105,9 +109,15 @@ abstract class WinControl {
     MoveWindow(_hWnd, _x, _y, _width, _height, TRUE);
   }
 
+  // TODO: replace by property
   void setParent(WinControl parent) {
+    ShowWindow(_hWnd, SW_HIDE);
+    updateWindowFlag(GWL_STYLE, {
+      WS_OVERLAPPEDWINDOW: false,
+      WS_TABSTOP: true,
+      WS_CHILD: true,
+    });
     SetParent(_hWnd, parent._hWnd);
-    SetWindowLongPtr(_hWnd, GWL_STYLE, WS_TABSTOP | WS_CHILD);
     _updateSize();
     ShowWindow(_hWnd, visible ? SW_SHOW : SW_HIDE);
   }
