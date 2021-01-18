@@ -1,6 +1,8 @@
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 final hInst = GetModuleHandle(nullptr);
@@ -11,14 +13,16 @@ const EVENT_TRAY_NOTIFY = WM_APP + 1;
 typedef LocalWndProc = bool Function(int hWnd,
     int uMsg, int wParam, int lParam);
 
+
 final wndProc = Pointer.fromFunction<WindowProc>(_appWndProc, 0);
 
-void exec() {
-  final msg = MSG.allocate().addressOf;
+int exec() {
+  final msg = calloc<MSG>();
   while (GetMessage(msg, NULL, 0, 0) != 0) {
     TranslateMessage(msg);
     DispatchMessage(msg);
   }
+  return msg.ref.lParam;
 }
 
 int loadDartIcon() {
@@ -46,11 +50,6 @@ int _appWndProc(int hWnd, int uMsg, int wParam, int lParam) {
     return TRUE;
   }
 
-  switch(uMsg) {
-    case WM_CLOSE:
-      ShowWindow(hWnd, SW_HIDE);
-      return TRUE;
-  }
   return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
@@ -67,3 +66,11 @@ bool iterateLocalWndProcs(int hWnd, int uMsg, int wParam, int lParam) {
 String _thisPath(String fileName) =>  Platform.script
     .toFilePath()
     .replaceFirst(RegExp(r'[^\\]+$'), fileName);
+
+Point<int> getMousePos() {
+  final point = calloc<POINT>();
+  GetCursorPos(point);
+  final result = Point(point.ref.x, point.ref.y);
+  free(point);
+  return result;
+}

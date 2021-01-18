@@ -3,50 +3,71 @@ import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 
 import '_app.dart' as app;
+import '_app.dart';
 import '_menu.dart' as menu;
 
-NOTIFYICONDATA _nid = NOTIFYICONDATA.allocate();
+class TrayNotifyIcon {
+  final String toolTip;
+  final int hIcon;
+  final int hWndParent;
 
-bool _trayWndProc(int hWnd, int msg, int wParam, int lParam)  {
-  switch (msg) {
-    case app.EVENT_TRAY_NOTIFY:
+  TrayNotifyIcon({
+    required this.hWndParent,
+    int icon = 0,
+    this.toolTip = '',
+    this.onWndProc,
+    this.onSelect,
+    this.onContextMenu,
+  }) : hIcon = icon == 0 ? LoadIcon(NULL, IDI_APPLICATION) : icon;
+
+  app.LocalWndProc? onWndProc;
+  Function()? onSelect;
+  Function(int x, int y)? onContextMenu;
+
+  void show() {
+    _nid ??= _allocNotifyIconData();
+    app.registryWdnProc(trayWndProc);
+    Shell_NotifyIcon(NIM_ADD, _nid!);
+  }
+
+  void hide() {
+    if (_nid == null) {
+      return;
+    }
+
+    Shell_NotifyIcon(NIM_DELETE, _nid!);
+    free(_nid!);
+    app.deregisterWndProc(trayWndProc);
+  }
+
+  bool trayWndProc(int hWnd, int msg, int wParam, int lParam)  {
+    if (msg == app.EVENT_TRAY_NOTIFY) {
       final trayMsg = _fixNotifyDataToVersion4(LOWORD(lParam));
       switch (trayMsg) {
         case NIN_SELECT:
-          ShowWindow(_nid.hWnd, IsWindowVisible(_nid.hWnd) == 1
-              ? SW_HIDE
-              : SW_SHOW);
-          SetForegroundWindow(_nid.hWnd);
-          return true;
+          return onSelect!.call() != null;
 
         case WM_CONTEXTMENU:
-          menu.show(hWndParent: hWnd);
-          return true;
+          final pos = getMousePos();
+          return onContextMenu?.call(pos.x, pos.y) != null;
       }
+    }
+    return onWndProc?.call(hWnd, msg, wParam, lParam) ?? false;
   }
-  return false;
-}
 
-void addIcon({required int hWndParent}) {
-  _nid.hWnd = hWndParent;
-  _nid.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE | NIF_SHOWTIP | NIF_GUID;
-  _nid.szTip = 'Dart tray';
-  _nid.uCallbackMessage = app.EVENT_TRAY_NOTIFY;
-  _nid.hIcon = app.loadDartIcon();
+  Pointer<NOTIFYICONDATA>? _nid;
 
-  Shell_NotifyIcon(NIM_ADD, _nid.addressOf);
-
-  // TODO: uVersion does not yet support. See NOTIFYICONDATA declaration
-  // nid.uVersion = 4;
-  // Shell_NotifyIcon(NIM_SETVERSION, nid.addressOf);
-
-  app.registryWdnProc(_trayWndProc);
-}
-
-void removeIcon() {
-  Shell_NotifyIcon(NIM_DELETE, _nid.addressOf);
-  free(_nid.addressOf);
-  app.deregisterWndProc(_trayWndProc);
+  Pointer<NOTIFYICONDATA> _allocNotifyIconData() {
+    final pNid = calloc<NOTIFYICONDATA>();
+    final nid = pNid.ref;
+    nid.cbSize =  sizeOf<NOTIFYICONDATA>();
+    nid.hWnd = hWndParent;
+    nid.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE | NIF_SHOWTIP | NIF_GUID;
+    pNid.szTip = toolTip;
+    nid.uCallbackMessage = app.EVENT_TRAY_NOTIFY;
+    nid.hIcon = hIcon;
+    return pNid;
+  }
 }
 
 int _fixNotifyDataToVersion4(int msg) {
